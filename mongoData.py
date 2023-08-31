@@ -1,12 +1,14 @@
 
 from pymongo.mongo_client import MongoClient
-from pymongo.server_api import ServerApi
-from datetime import datetime
-
 import dataTemplate
 
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
 def GetDB():
-    uri =  '${{MongoDB.MONGO_URL}}'
+    uri =  os.environ["MONGO_URL"]
     client = MongoClient(uri)
 
     return client.DoTheyChargeExtra
