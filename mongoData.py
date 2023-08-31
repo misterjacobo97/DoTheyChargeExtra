@@ -11,7 +11,7 @@ def GetDB():
     uri =  os.environ["MONGO_URL"]
     client = MongoClient(uri)
 
-    return client.DoTheyChargeExtra
+    return client.DoTheyChargeExtraDB
 
 def GetCafeDocs(room : str = None):
     if room:
@@ -19,12 +19,9 @@ def GetCafeDocs(room : str = None):
     return GetDB().VeganCafes.find({})
 
 def MakeCafesPydantic(room : str = None):
-
-
     cafesList = dataTemplate.CafeList()
 
     for x in GetCafeDocs(room):
-        
         cafe = dataTemplate.CafeModel()
         cafe.coords.lat = x['coords']['lat']
         cafe.coords.long = x['coords']['long']

@@ -4,7 +4,7 @@ from typing import List
 
 import folium
 
-def AddMapFeatureGroup(groupName):
+def AddMapFeatureGroup(groupName, map):
     return folium.FeatureGroup(
         name = groupName, 
         overlay = True,
@@ -12,71 +12,96 @@ def AddMapFeatureGroup(groupName):
         control = True
     )
 
-def AddMapCafes(map : folium.Map, cafe : dataTemplate.CafeModel, featureGroups):
+def MakeMylkHTML(cafe : dataTemplate.CafeModel):
+    html = ""
+
+    for x in cafe.mylks:
+        html += f"<h5><b>{x.type}: </b></h5>"
+        if type(x.name) is None:
+            html += "<h5><b>Not known!</b></h5>"
+        else:
+            html += f"<h5><b>{x.name}</b></h5>"
+
+            html += f"<h5><b>Extra cost?</b> {x.extraCharge}</h5>"
+
+    return html
+
+def htmlTemplate(cafe : dataTemplate.CafeModel):
+    txt = f"""
+
+        <h4><b>{cafe.name}</b></h4>
+
+        <h5><b>Category:</b></h5> 
+        <h6>{(cafe.category).capitalize()}</h6>
+        <br>
+
+        """
+
+    
+    popupHTML = folium.Html(data=(txt + MakeMylkHTML(cafe)),script=True)
+    return popupHTML
+
+
+def AddMapCafes(cafe : dataTemplate.CafeModel):
+    def GetPopupIcon(cafe : dataTemplate.CafeModel):
+        if cafe.category == 'vegan cafe':
+            return 'mug-hot'
+        elif cafe.category == 'cafe':
+            return 'mug-saucer'
+        elif cafe.category == 'restaurant':
+            return 'utensils'
+    
+    def GetPopupColour(cafe : dataTemplate.CafeModel):
+        if cafe.category == 'vegan cafe':
+            return 'darkgreen'
+        elif cafe.category == 'cafe':
+            return 'orange'
+        elif cafe.category == 'restaurant':
+            return 'purple'
         
-        def GetPopupIcon(cafe : dataTemplate.CafeModel):
-            if cafe.category == 'vegan cafe':
-                return 'mug-hot'
-            elif cafe.category == 'cafe':
-                return 'mug-saucer'
-            elif cafe.category == 'restaurant':
-                return 'utensils'
-        
-        def GetPopupColour(cafe : dataTemplate.CafeModel):
-            if cafe.category == 'vegan cafe':
-                return 'darkgreen'
-            elif cafe.category == 'cafe':
-                return 'orange'
-            elif cafe.category == 'restaurant':
-                return 'purple'
-            
-        def AddToGroup(cafe : dataTemplate.CafeModel, featureGroups : dataTemplate.LayerGroups, marker : folium.Marker):
-            # for x in featureGroups:
-            if cafe.category == 'vegan cafe':
-                marker.add_to(featureGroups[0])
-                # return featureGroups[0]
-            elif cafe.category == 'cafe':
-                marker.add_to(featureGroups[1])
-                # return featureGroups[1]
-            elif cafe.category == 'restaurant':
-                marker.add_to(featureGroups[2])
-                # return featureGroups[2]
-
-        newMarker = folium.Marker(
-            location = [cafe.coords.lat, cafe.coords.long],
-            popup = cafe.name,
-            icon= folium.Icon(icon = GetPopupIcon(cafe), prefix='fa', color=GetPopupColour(cafe)),
-        ).add_to(map)
-
-        AddToGroup(cafe, featureGroups, newMarker)
-
-async def GetMap():
-    map = folium.Map(location=[-33.87332753692324, 151.2081342404059], 
-        tiles="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", 
-        attr='© OpenStreetMap contributors © CARTO',
-        prefer_canvas=True,
-        zoom_start=14,
+    newPop = folium.Popup(
+        html=htmlTemplate(cafe)
     )
 
-    layercontrol = folium.LayerControl("topright", collapsed=True)
+    newMarker = folium.Marker(
+        location = [cafe.coords.lat, cafe.coords.long],
+        popup = newPop,
+        icon= folium.Icon(icon = GetPopupIcon(cafe), prefix='fa', color=GetPopupColour(cafe)),
+    )
 
-    featureGroups : List[folium.FeatureGroup] = []
+    return newMarker
 
-    veganGroup = AddMapFeatureGroup("Vegan Cafes")
-    cafeGroup = AddMapFeatureGroup("Cafes")
-    restaurantGroup = AddMapFeatureGroup("Restaurants")
+async def GetMap():
+    dark_layer = folium.TileLayer(name="Dark",tiles="CartoDB dark_matter",attr="© OpenStreetMap contributors © CARTO")
 
-    featureGroups.append(veganGroup)
-    featureGroups.append(cafeGroup)
-    featureGroups.append(restaurantGroup)
+    map = folium.Map(
+        location=[-33.87332753692324, 151.2081342404059],
+        prefer_canvas=True,
+        zoom_start=14,
+        tiles=dark_layer,
+    )
+
+    folium.TileLayer(tiles="CartoDB Positron", name="Light", attr="© OpenStreetMap contributors © CARTO").add_to(map)
+
+
+    veganGroup = AddMapFeatureGroup("Vegan Cafes", map)
+    cafeGroup = AddMapFeatureGroup("Cafes", map)
+    restaurantGroup = AddMapFeatureGroup("Restaurants", map)
 
     for cafe in mongoData.MakeCafesPydantic().list:
-        AddMapCafes(map, cafe, featureGroups)
+        if cafe.category == 'vegan cafe':
+            veganGroup.add_child(AddMapCafes(cafe))
 
-    for x in featureGroups:
-        x.add_to(map)
-        # layercontrol.add_child(x)
+        elif cafe.category == 'cafe':
+            cafeGroup.add_child(AddMapCafes(cafe))
 
-    layercontrol.add_to(map)
+        elif cafe.category == 'restaurant':
+            restaurantGroup.add_child(AddMapCafes(cafe))
+
+    veganGroup.add_to(map)
+    cafeGroup.add_to(map)
+    restaurantGroup.add_to(map)
+
+    folium.LayerControl("topright", collapsed=True).add_to(map)
 
     return map
