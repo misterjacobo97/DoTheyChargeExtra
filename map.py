@@ -46,12 +46,9 @@ def AddMapCafes(cafe : dataTemplate.CafeModel, featureGroups):
             location = [cafe.coords.lat, cafe.coords.long],
             popup = cafe.name,
             icon= folium.Icon(icon = GetPopupIcon(cafe), prefix='fa', color=GetPopupColour(cafe)),
-        )
+        ).add_to(map)
 
-        return newMarker
-
-        # AddToGroup(cafe, featureGroups, newMarker)
-        
+        AddToGroup(cafe, featureGroups, newMarker)
 
 async def GetMap():
     map = folium.Map(location=[-33.87332753692324, 151.2081342404059], 
@@ -74,7 +71,7 @@ async def GetMap():
     featureGroups.append(restaurantGroup)
 
     for cafe in mongoData.MakeCafesPydantic().list:
-        AddMapCafes(map, cafe, featureGroups).add_to(map)
+        AddMapCafes(map, cafe, featureGroups)
 
     for x in featureGroups:
         layercontrol.add_child(x)
