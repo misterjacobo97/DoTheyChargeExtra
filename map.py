@@ -56,7 +56,7 @@ async def GetMap():
         attr='© OpenStreetMap contributors © CARTO',
         prefer_canvas=True,
         zoom_start=14,
-    )
+    ).add_to(map)
 
     layercontrol = folium.LayerControl("topright", collapsed=True)
 
