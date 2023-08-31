@@ -76,7 +76,7 @@ async def GetMap():
     for cafe in mongoData.MakeCafesPydantic().list:
         AddMapCafes(map, cafe, featureGroups).add_to(map)
 
-    for x in featureGroups.list:
+    for x in featureGroups:
         layercontrol.add_child(x)
 
     layercontrol.add_to(map)
