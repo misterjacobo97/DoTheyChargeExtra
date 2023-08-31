@@ -6,7 +6,7 @@ from datetime import datetime
 import dataTemplate
 
 def GetDB():
-    uri =  '${{MONGODB_URL}}'
+    uri =  '${{MongoDB.MONGO_URL}}'
     client = MongoClient(uri)
 
     return client.DoTheyChargeExtra
