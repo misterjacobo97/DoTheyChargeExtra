@@ -1,7 +1,4 @@
 import mongoData
-# from fastapi import FastAPI, Form, Request
-# from pathlib import Path
-# import rich
 import dataTemplate
 from typing import List
 
@@ -15,7 +12,7 @@ def AddMapFeatureGroup(groupName):
         control = True
     )
 
-def AddMapCafes(cafe : dataTemplate.CafeModel, featureGroups):
+def AddMapCafes(map : folium.Map, cafe : dataTemplate.CafeModel, featureGroups):
         
         def GetPopupIcon(cafe : dataTemplate.CafeModel):
             if cafe.category == 'vegan cafe':
@@ -34,16 +31,16 @@ def AddMapCafes(cafe : dataTemplate.CafeModel, featureGroups):
                 return 'purple'
             
         def AddToGroup(cafe : dataTemplate.CafeModel, featureGroups : dataTemplate.LayerGroups, marker : folium.Marker):
-            for x in featureGroups:
-                if cafe.category == 'vegan cafe':
-                    marker.add_to(featureGroups[0])
-                    return featureGroups[0]
-                elif cafe.category == 'cafe':
-                    marker.add_to(featureGroups[1])
-                    return featureGroups[1]
-                elif cafe.category == 'restaurant':
-                    marker.add_to(featureGroups[2])
-                    return featureGroups[2]
+            # for x in featureGroups:
+            if cafe.category == 'vegan cafe':
+                marker.add_to(featureGroups[0])
+                # return featureGroups[0]
+            elif cafe.category == 'cafe':
+                marker.add_to(featureGroups[1])
+                # return featureGroups[1]
+            elif cafe.category == 'restaurant':
+                marker.add_to(featureGroups[2])
+                # return featureGroups[2]
 
         newMarker = folium.Marker(
             location = [cafe.coords.lat, cafe.coords.long],
@@ -51,7 +48,7 @@ def AddMapCafes(cafe : dataTemplate.CafeModel, featureGroups):
             icon= folium.Icon(icon = GetPopupIcon(cafe), prefix='fa', color=GetPopupColour(cafe)),
         )
 
-        AddToGroup(cafe, featureGroups, newMarker).add_to(map)
+        AddToGroup(cafe, featureGroups, newMarker)
 
 async def GetMap():
     map = folium.Map(location=[-33.87332753692324, 151.2081342404059], 
@@ -63,11 +60,11 @@ async def GetMap():
 
     layercontrol = folium.LayerControl("topright", collapsed=True)
 
-    featureGroups : List = []
+    featureGroups : List[folium.FeatureGroup] = []
 
-    veganGroup = AddMapFeatureGroup("Vegan Cafes").add_to(map)
-    cafeGroup = AddMapFeatureGroup("Cafes").add_to(map)
-    restaurantGroup = AddMapFeatureGroup("Restaurants").add_to(map)
+    veganGroup = AddMapFeatureGroup("Vegan Cafes")
+    cafeGroup = AddMapFeatureGroup("Cafes")
+    restaurantGroup = AddMapFeatureGroup("Restaurants")
 
     featureGroups.append(veganGroup)
     featureGroups.append(cafeGroup)
@@ -77,7 +74,8 @@ async def GetMap():
         AddMapCafes(map, cafe, featureGroups)
 
     for x in featureGroups:
-        layercontrol.add_child(x)
+        x.add_to(map)
+        # layercontrol.add_child(x)
 
     layercontrol.add_to(map)
 
