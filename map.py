@@ -36,11 +36,11 @@ def AddMapCafes(cafe : dataTemplate.CafeModel, featureGroups):
         def AddToGroup(cafe : dataTemplate.CafeModel, featureGroups : dataTemplate.LayerGroups, marker : folium.Marker):
             for x in featureGroups.list:
                 if cafe.category == 'vegan cafe':
-                    marker.add_to(featureGroups.list[0])
+                    marker.add_to(featureGroups[0])
                 elif cafe.category == 'cafe':
-                    marker.add_to(featureGroups.list[1])
+                    marker.add_to(featureGroups[1])
                 elif cafe.category == 'restaurant':
-                    marker.add_to(featureGroups.list[2])
+                    marker.add_to(featureGroups[2])
 
         newMarker = folium.Marker(
             location = [cafe.coords.lat, cafe.coords.long],
