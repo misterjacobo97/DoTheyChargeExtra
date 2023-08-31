@@ -34,21 +34,24 @@ def AddMapCafes(cafe : dataTemplate.CafeModel, featureGroups):
                 return 'purple'
             
         def AddToGroup(cafe : dataTemplate.CafeModel, featureGroups : dataTemplate.LayerGroups, marker : folium.Marker):
-            for x in featureGroups.list:
+            for x in featureGroups:
                 if cafe.category == 'vegan cafe':
                     marker.add_to(featureGroups[0])
+                    return featureGroups[0]
                 elif cafe.category == 'cafe':
                     marker.add_to(featureGroups[1])
+                    return featureGroups[1]
                 elif cafe.category == 'restaurant':
                     marker.add_to(featureGroups[2])
+                    return featureGroups[2]
 
         newMarker = folium.Marker(
             location = [cafe.coords.lat, cafe.coords.long],
             popup = cafe.name,
             icon= folium.Icon(icon = GetPopupIcon(cafe), prefix='fa', color=GetPopupColour(cafe)),
-        ).add_to(map)
+        )
 
-        AddToGroup(cafe, featureGroups, newMarker)
+        AddToGroup(cafe, featureGroups, newMarker).add_to(map)
 
 async def GetMap():
     map = folium.Map(location=[-33.87332753692324, 151.2081342404059], 
