@@ -46,7 +46,7 @@ def AddMapCafes(map : folium.Map, cafe : dataTemplate.CafeModel, featureGroups):
             location = [cafe.coords.lat, cafe.coords.long],
             popup = cafe.name,
             icon= folium.Icon(icon = GetPopupIcon(cafe), prefix='fa', color=GetPopupColour(cafe)),
-        )
+        ).add_to(map)
 
         AddToGroup(cafe, featureGroups, newMarker)
 
@@ -56,7 +56,7 @@ async def GetMap():
         attr='© OpenStreetMap contributors © CARTO',
         prefer_canvas=True,
         zoom_start=14,
-    ).add_to(map)
+    )
 
     layercontrol = folium.LayerControl("topright", collapsed=True)
 
