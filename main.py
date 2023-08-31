@@ -1,7 +1,11 @@
 from fastapi import FastAPI
+from fastapi import Response
+from map import GetMap
 
 app = FastAPI()
 
 @app.get("/")
 async def root():
-    return {"greeting": "Hello, World!", "message": "Welcome to FastAPI!"}
+    map = await GetMap()
+
+    return Response(map.get_root().render()) 

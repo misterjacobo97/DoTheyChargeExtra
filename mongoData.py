@@ -2,12 +2,11 @@
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 from datetime import datetime
-# import rich
 
 import dataTemplate
 
 def GetDB():
-    uri =  '${{MongoDB.MONGO_URL}}'
+    uri =  '${{MONGODB_URL}}'
     client = MongoClient(uri)
 
     return client.DoTheyChargeExtra
