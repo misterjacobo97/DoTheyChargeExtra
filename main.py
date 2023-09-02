@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi import Response
+from fastapi.responses import HTMLResponse
 from map import GetMap
 
 app = FastAPI()
@@ -12,4 +13,10 @@ async def root():
 
 @app.get("/new_entry")
 async def NewEntry():
-    return
+    return HTMLResponse(
+        """<!DOCTYPE>
+        <html>
+        <body>hello</body>
+        </html>
+        """
+    )

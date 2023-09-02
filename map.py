@@ -45,7 +45,6 @@ def MakePopupHead():
                 padding-top: 10%;
                 padding-bottom: 15%;
             }
-
             .title-popup {
                 text-align: center; 
                 margin: flex;
@@ -55,6 +54,9 @@ def MakePopupHead():
                 border-left-style: none;
             }
 
+            .popup-body-title {
+                
+            }
         </style>
         """
     
@@ -76,15 +78,17 @@ def MakePopupHTML(cafe : dataTemplate.CafeModel, icon : str, iconColour : str):
         <br>
         """
 
-    body = ""
+    body = "<div class=popup-body>"
     for x in cafe.mylks:
-        body += f"<h5><b>{x.type[0].upper()}: </b></h5>"
+        body += f"<div class=popup-body-title><h5><b>{x.type[0].capitalize()}</b></h5></div>"
         if x.name[0] is None:
             body += "<h5><b>Not known!</b></h5>"
         else:
             body += f"<h5><b>{x.name[0].capitalize()}</b></h5>"
 
             body += f"<h5><b>Extra cost?</b> {x.extraCharge}</h5>"
+    
+    body += "</div>"
 
     popupHTML = folium.Html(width=200,data=(title + body),script=True)
     return popupHTML
