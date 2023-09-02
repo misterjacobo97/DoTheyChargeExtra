@@ -19,19 +19,59 @@ def MakePopupHead():
 
             h4, h5, h6 {color : white;}
 
+            .title, .subtitle {
+                display: contents;
+            }
+
+            .subtitle{
+                width: 100%;
+                text-align: center;
+            }
+            .subtitle > h5{
+                color: #636363;
+                font-family: serif;
+                font-style: italic;
+            }
+
+            .fa-solid{
+                width: 100%;
+                text-align: center;
+            }
+            .fa-2xl{font-size: xx-large !important;}
+
+            .title-popup-icon {
+                width: 100%;
+                text-align: center;
+                padding-top: 10%;
+                padding-bottom: 15%;
+            }
+
+            .title-popup {
+                text-align: center; 
+                margin: flex;
+                padding: 1%;
+                border: 2px solid #636363;
+                border-right-style: none;
+                border-left-style: none;
+            }
+
         </style>
         """
     
     return style
 
-def MakePopupHTML(cafe : dataTemplate.CafeModel):
+def MakePopupHTML(cafe : dataTemplate.CafeModel, icon : str, iconColour : str):
     title = f"""
-        <div>
-        <img src="img_girl.jpg" alt="Girl in a jacket" width="500" height="600">
-
-        <h4><b>{cafe.name}</b></h4>
-
-        <h5><b>Category:</b> {(cafe.category).capitalize()} </h5> 
+        <div class=title>
+            <div class="title-popup-icon">
+                <i class="fa-solid fa-{icon} fa-2xl" style="color: {iconColour};"></i>
+            </div>
+            <div class="title-popup">
+                <h4><b>{cafe.name}</b></h4>
+            </div>
+            <div class=subtitle>
+                <h5>{(cafe.category).capitalize()} </h5> 
+            </div>
         </div>
         <br>
         """
@@ -65,16 +105,24 @@ def MakeMarker(cafe : dataTemplate.CafeModel):
             return 'orange'
         elif cafe.category == 'restaurant':
             return 'purple'
+
+    def GetPopupTitleColour(cafe : dataTemplate.CafeModel):
+        if cafe.category == 'vegan cafe':
+            return '#728224'
+        elif cafe.category == 'cafe':
+            return '#f59630'
+        elif cafe.category == 'restaurant':
+            return '#cf51b6'
         
     newPop = folium.Popup(
-        html=MakePopupHTML(cafe),
+        html=MakePopupHTML(cafe, GetPopupIcon(cafe), GetPopupTitleColour(cafe)),
         lazy=True
     )
 
     newMarker = folium.Marker(
         location = [cafe.coords.lat, cafe.coords.long],
         popup = newPop,
-        icon= folium.Icon(icon = GetPopupIcon(cafe), prefix='fa', color=GetPopupColour(cafe)),
+        icon= folium.Icon(icon=GetPopupIcon(cafe), prefix='fa', color=GetPopupColour(cafe)),
     )
 
     return newMarker
