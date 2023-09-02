@@ -8,4 +8,8 @@ app = FastAPI()
 async def root():
     map = await GetMap()
 
-    return Response(map.get_root().render()) 
+    return Response(map.get_root().render())
+
+@app.get("/new_entry")
+async def NewEntry():
+    return

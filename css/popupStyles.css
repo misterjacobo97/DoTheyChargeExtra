@@ -1,0 +1,13 @@
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background: #141414 !important;
+}
+
+h4 {
+  color: white;
+  text-align: center;
+}
+
+h5 {
+  color: white;
+}

@@ -12,37 +12,44 @@ def AddMapFeatureGroup(groupName, map):
         control = True
     )
 
-def MakeMylkHTML(cafe : dataTemplate.CafeModel):
-    html = ""
+def MakePopupHead():
+    style = """
+        <style>
+            .leaflet-popup-content-wrapper, .leaflet-popup-tip {background : #393939 !important;}
 
-    for x in cafe.mylks:
-        html += f"<h5><b>{x.type}: </b></h5>"
-        if type(x.name) is None:
-            html += "<h5><b>Not known!</b></h5>"
-        else:
-            html += f"<h5><b>{x.name}</b></h5>"
+            h4, h5, h6 {color : white;}
 
-            html += f"<h5><b>Extra cost?</b> {x.extraCharge}</h5>"
+        </style>
+        """
+    
+    return style
 
-    return html
-
-def htmlTemplate(cafe : dataTemplate.CafeModel):
-    txt = f"""
+def MakePopupHTML(cafe : dataTemplate.CafeModel):
+    title = f"""
+        <div>
+        <img src="img_girl.jpg" alt="Girl in a jacket" width="500" height="600">
 
         <h4><b>{cafe.name}</b></h4>
 
-        <h5><b>Category:</b></h5> 
-        <h6>{(cafe.category).capitalize()}</h6>
+        <h5><b>Category:</b> {(cafe.category).capitalize()} </h5> 
+        </div>
         <br>
-
         """
 
-    
-    popupHTML = folium.Html(data=(txt + MakeMylkHTML(cafe)),script=True)
+    body = ""
+    for x in cafe.mylks:
+        body += f"<h5><b>{x.type[0].upper()}: </b></h5>"
+        if x.name[0] is None:
+            body += "<h5><b>Not known!</b></h5>"
+        else:
+            body += f"<h5><b>{x.name[0].capitalize()}</b></h5>"
+
+            body += f"<h5><b>Extra cost?</b> {x.extraCharge}</h5>"
+
+    popupHTML = folium.Html(width=200,data=(title + body),script=True)
     return popupHTML
 
-
-def AddMapCafes(cafe : dataTemplate.CafeModel):
+def MakeMarker(cafe : dataTemplate.CafeModel):
     def GetPopupIcon(cafe : dataTemplate.CafeModel):
         if cafe.category == 'vegan cafe':
             return 'mug-hot'
@@ -60,7 +67,8 @@ def AddMapCafes(cafe : dataTemplate.CafeModel):
             return 'purple'
         
     newPop = folium.Popup(
-        html=htmlTemplate(cafe)
+        html=MakePopupHTML(cafe),
+        lazy=True
     )
 
     newMarker = folium.Marker(
@@ -83,24 +91,29 @@ async def GetMap():
 
     folium.TileLayer(tiles="CartoDB Positron", name="Light", attr="© OpenStreetMap contributors © CARTO").add_to(map)
 
-
     veganGroup = AddMapFeatureGroup("Vegan Cafes", map)
     cafeGroup = AddMapFeatureGroup("Cafes", map)
     restaurantGroup = AddMapFeatureGroup("Restaurants", map)
 
+
     for cafe in mongoData.MakeCafesPydantic().list:
         if cafe.category == 'vegan cafe':
-            veganGroup.add_child(AddMapCafes(cafe))
+            veganGroup.add_child(MakeMarker(cafe))
 
         elif cafe.category == 'cafe':
-            cafeGroup.add_child(AddMapCafes(cafe))
+            cafeGroup.add_child(MakeMarker(cafe))
 
         elif cafe.category == 'restaurant':
-            restaurantGroup.add_child(AddMapCafes(cafe))
+            restaurantGroup.add_child(MakeMarker(cafe))
 
     veganGroup.add_to(map)
     cafeGroup.add_to(map)
     restaurantGroup.add_to(map)
+
+    # adding scalability for mobile display
+    map.get_root().header.add_child(folium.Element(
+        MakePopupHead()
+    ))
 
     folium.LayerControl("topright", collapsed=True).add_to(map)
 

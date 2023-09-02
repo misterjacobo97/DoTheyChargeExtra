@@ -4,6 +4,7 @@ import dataTemplate
 
 from dotenv import load_dotenv
 import os
+import re
 
 load_dotenv()
 
@@ -44,7 +45,6 @@ def MakeCafesPydantic(room : str = None):
         if room is not None:
             return cafe
         else:
-            # rich.print(cafe.model_dump_json())
             cafesList.list.append(cafe)
 
     return cafesList
