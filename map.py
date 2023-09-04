@@ -13,53 +13,8 @@ def AddMapFeatureGroup(groupName, map):
     )
 
 def MakePopupHead():
-    style = """
-        <style>
-            .leaflet-popup-content-wrapper, .leaflet-popup-tip {background : #393939 !important;}
+    style = "<style>" + open("css\popupStyles.css").read() + "</style>"
 
-            h4, h5, h6 {color : white;}
-
-            .title, .subtitle {
-                display: contents;
-            }
-
-            .subtitle{
-                width: 100%;
-                text-align: center;
-            }
-            .subtitle > h5{
-                color: #636363;
-                font-family: serif;
-                font-style: italic;
-            }
-
-            .fa-solid{
-                width: 100%;
-                text-align: center;
-            }
-            .fa-2xl{font-size: xx-large !important;}
-
-            .title-popup-icon {
-                width: 100%;
-                text-align: center;
-                padding-top: 10%;
-                padding-bottom: 15%;
-            }
-            .title-popup {
-                text-align: center; 
-                margin: flex;
-                padding: 1%;
-                border: 2px solid #636363;
-                border-right-style: none;
-                border-left-style: none;
-            }
-
-            .popup-body-title {
-                
-            }
-        </style>
-        """
-    
     return style
 
 def MakePopupHTML(cafe : dataTemplate.CafeModel, icon : str, iconColour : str):
@@ -81,16 +36,22 @@ def MakePopupHTML(cafe : dataTemplate.CafeModel, icon : str, iconColour : str):
     body = "<div class=popup-body>"
     for x in cafe.mylks:
         body += f"<div class=popup-body-title><h5><b>{x.type[0].capitalize()}</b></h5></div>"
+
+        body += "<div class=popup-body-content>"
+        
+        body += "<div class=content-headings><h5 id=brand-tag>Brand:</h5><h5 id=extra-cost-title>Extra cost:</h5></div>"
+
+        body += "<div class=content-info>"
+
         if x.name[0] is None:
-            body += "<h5><b>Not known!</b></h5>"
+            body += "<div id=unknown-tag><h5 id=unknown-tag>Not known!</h5><h5 id=unknown-tag>Not known!</h5></div>"
         else:
-            body += f"<h5><b>{x.name[0].capitalize()}</b></h5>"
+            body += f"<h5 id=name-tag>{x.name[0].capitalize()}</h5>"
 
-            body += f"<h5><b>Extra cost?</b> {x.extraCharge}</h5>"
-    
-    body += "</div>"
+            body += f"<h5 id=extra-cost-tag>{x.extraCharge}</h5>"
+        body += "</div></div>"
 
-    popupHTML = folium.Html(width=200,data=(title + body),script=True)
+    popupHTML = folium.Html(width=200,data=("<div class=container>" + title + body + "</div>"),script=True)
     return popupHTML
 
 def MakeMarker(cafe : dataTemplate.CafeModel):
@@ -146,7 +107,6 @@ async def GetMap():
     veganGroup = AddMapFeatureGroup("Vegan Cafes", map)
     cafeGroup = AddMapFeatureGroup("Cafes", map)
     restaurantGroup = AddMapFeatureGroup("Restaurants", map)
-
 
     for cafe in mongoData.MakeCafesPydantic().list:
         if cafe.category == 'vegan cafe':
