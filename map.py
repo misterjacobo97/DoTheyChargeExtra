@@ -106,7 +106,7 @@ def oldwaycss():
     return style
 
 def MakePopupHead():
-    style = "<style>" + open(".\css\popupStyles.css").read() + "</style>"
+    style = "<style>" + open () open(".\css\popupStyles.css").read() + "</style>"
 
     return style
 
