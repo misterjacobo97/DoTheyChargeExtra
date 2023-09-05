@@ -11,12 +11,12 @@ def GetDB():
     uri =  os.environ["MONGO_URL"]
     client = MongoClient(uri)
 
-    return client.DoTheyChargeExtraDB
+    return client.DoTheyChargeExtraDB#cafes
 
 def GetCafeDocs(room : str = None):
     if room:
-        return GetDB().VeganCafes.find({'name':room})
-    return GetDB().VeganCafes.find({})
+        return GetDB().VeganCafes.find({'name':room})#.cafeinfo.find({'name':room})
+    return GetDB().VeganCafes.find({})#cafeinfo.find({})
 
 def MakeCafesPydantic(room : str = None):
     cafesList = dataTemplate.CafeList()
