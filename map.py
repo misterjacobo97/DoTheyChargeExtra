@@ -3,6 +3,7 @@ import dataTemplate
 from typing import List
 
 import folium
+
 def oldcss():
     style = """
 
@@ -219,7 +220,7 @@ def oldwaycss():
     return style
 
 def MakePopupHead():
-    style = "<style>" + open () open(".\css\popupStyles.css").read() + "</style>"
+    style = "<style>" + open(".\css\popupStyles.css").read() + "</style>"
 
     return oldcss()
 
