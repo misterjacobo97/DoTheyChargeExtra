@@ -220,9 +220,9 @@ def oldwaycss():
     return style
 
 def MakePopupHead():
-    style = "<style>" + open(".\css\popupStyles.css").read() + "</style>"
+    style = "<style>" + oldcss() + "</style>" #open(".\css\popupStyles.css").read() + "</style>"
 
-    return oldcss()
+    return style
 
 def MakePopupHTML(cafe : dataTemplate.CafeModel, icon : str, iconColour : str):
     title = f"""
