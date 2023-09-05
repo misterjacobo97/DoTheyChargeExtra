@@ -12,6 +12,99 @@ def AddMapFeatureGroup(groupName, map):
         control = True
     )
 
+def oldwaycss():
+    style = """
+            .container,
+        .title,
+        .title-popup-icon,
+        .subtitle,
+        .popup-body,
+        .popup-body-title {
+        display: flex;
+        flex-direction: column;
+        }
+
+        .popup-body-title {
+        align-items: center;
+        }
+
+        .popup-body-content-brand,
+        .popup-body-content-extra {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        }
+
+        .popup-body-content {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-evenly;
+        }
+
+        .popup-body-content>.content-headings,
+        .content-info,
+        .unknown-tag {
+        display: flex;
+        flex-direction: column;
+        }
+
+        .content-headings, .content-info {
+        align-items: flex-end;
+        }
+
+        .leaflet-popup-content-wrapper,
+        .leaflet-popup-tip {
+        background: #393939 !important;
+        }
+
+        h4,
+        h5,
+        h6 {
+        color: white;
+        }
+
+        .subtitle {
+        width: 100%;
+        text-align: center;
+        }
+
+        .subtitle>h5 {
+        color: #636363;
+        font-family: serif;
+        font-style: italic;
+        }
+
+        .fa-solid {
+        width: 100%;
+        text-align: center;
+        }
+
+        .fa-2xl {
+        font-size: xx-large !important;
+        }
+
+        .title-popup-icon {
+        width: 100%;
+        text-align: center;
+        padding-top: 10%;
+        padding-bottom: 15%;
+        }
+
+        .title-popup {
+        text-align: center;
+        margin: flex;
+        padding: 1%;
+        border: 2px solid #636363;
+        border-right-style: none;
+        border-left-style: none;
+        }
+
+        /* 
+        .popup-body-title {
+        } */
+    """
+    return style
+
 def MakePopupHead():
     style = "<style>" + open("css\popupStyles.css").read() + "</style>"
 
@@ -126,7 +219,7 @@ async def GetMap():
 
     # adding scalability for mobile display
     map.get_root().header.add_child(folium.Element(
-        MakePopupHead()
+        oldwaycss()
     ))
 
     folium.LayerControl("topright", collapsed=True).add_to(map)
