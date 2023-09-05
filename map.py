@@ -41,10 +41,12 @@ def MakePopupHTML(cafe : dataTemplate.CafeModel, icon : str, iconColour : str):
         
         body += "<div class=content-headings><h5 id=brand-tag>Brand:</h5><h5 id=extra-cost-title>Extra cost:</h5></div>"
 
-        body += "<div class=content-info>"
+        body += "<div class=popup-divider></div>"
 
+        body += "<div class=content-info>"
+        
         if x.name[0] is None:
-            body += "<div id=unknown-tag><h5 id=unknown-tag>Not known!</h5><h5 id=unknown-tag>Not known!</h5></div>"
+            body += "<h5 id=unknown-tag>Not known!</h5><h5 id=unknown-tag>Not known!</h5>"
         else:
             body += f"<h5 id=name-tag>{x.name[0].capitalize()}</h5>"
 
