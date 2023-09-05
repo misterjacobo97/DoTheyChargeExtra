@@ -8,6 +8,17 @@
   flex-direction: column;
 }
 
+.container{
+  width: 70vw;
+  display: flex;
+  align-items: stretch;
+  padding: 0;
+}
+
+.popup-body{
+  align-items: stretch;
+}
+
 .popup-body-title {
   align-items: center;
 }
@@ -21,19 +32,27 @@
 
 .popup-body-content {
   display: flex;
+  width:100%;
   flex-direction: row;
-  justify-content: space-evenly;
+  justify-content: stretch;
 }
 
 .popup-body-content>.content-headings,
-.content-info,
-.unknown-tag {
+.content-info, .popup-divider {
   display: flex;
   flex-direction: column;
 }
 
+.popup-divider{
+  flex-basis: 20%;
+}
+
 .content-headings, .content-info {
-  align-items: flex-end;
+  flex-basis: 100%;
+  align-items: stretch;
+}
+.content-headings{
+  text-align: end;
 }
 
 .leaflet-popup-content-wrapper,
