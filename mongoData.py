@@ -15,7 +15,7 @@ def GetDB():
 
 def GetCafeDocs(room : str = None):
     if room:
-        return GetDB().VeganCafes.find({'name':room})#.cafeinfo.find({'name':room})#
+        return GetDB().VeganCafes.find({'name':room})#.cafeinfo.find({'name':room})
     return GetDB().VeganCafes.find({})#cafeinfo.find({})
 
 def MakeCafesPydantic(room : str = None):
