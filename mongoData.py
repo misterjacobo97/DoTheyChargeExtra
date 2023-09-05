@@ -11,7 +11,7 @@ def GetDB():
     uri =  os.environ["MONGO_URL"]
     client = MongoClient(uri)
 
-    return client.cafes#DoTheyChargeExtraDB
+    return client.DoTheyChargeExtraDB#cafes
 
 def GetCafeDocs(room : str = None):
     if room:
