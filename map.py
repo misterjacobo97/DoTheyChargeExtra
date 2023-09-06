@@ -6,7 +6,6 @@ import folium
 
 def oldcss():
     style = """
-
         .container,
         .title,
         .title-popup-icon,
@@ -111,9 +110,6 @@ def oldcss():
         border-left-style: none;
         }
 
-        /* 
-        .popup-body-title {
-        } */
     """
     
     return style

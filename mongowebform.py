@@ -1,35 +1,26 @@
-from fastapi import FastAPI
-from fastapi import Response
-from fastapi.responses import HTMLResponse
-from map import GetMap
+import mongoData
 
-import mongowebform, mongoData
+def CafeSelection():
+    cafes = mongoData.MakeCafesPydantic().list
 
-app = FastAPI()
+    form = f"""
+        <label for="cafe">Cafes:</label>
 
-@app.get("/")
-async def root():
-    map = await GetMap()
 
-    return Response(map.get_root().render())
+        <select name="cafe" id="cafe-select" hx-get="/get_cafe" hx-target="#cafe-label" hx-indicator=".htmx-indicator">
+        """
+        
+    for x in cafes:
+        form += f'<option value="{x.name}"> {x.name} </option>'
 
-@app.get("/cafes_info")
-async def NewEntry(cafe = None):
+    form += "</select><br>"
+    # form += "<button >send</button>"
 
-    if cafe:
-        return HTMLResponse(
-            mongowebform.MakeWebform(cafe)
-        )
-    
-    return HTMLResponse(
-        mongowebform.MakeWebform()
-    )
+    return form
 
-@app.get('/get_cafe')
-def GetCafe(cafe = None):
+def MakeCafeTable():
     cafeinfo = mongoData.MakeCafesPydantic()
 
-    
     html = f"""
     <table style="width: 100%">
 
@@ -56,9 +47,6 @@ def GetCafe(cafe = None):
         </tr> 
     """
 
-    # if not cafe:
-    #     cafeinfo = cafeinfo.list
-
     for x in cafeinfo.list:
         html += f"""
             <tr>
@@ -82,7 +70,21 @@ def GetCafe(cafe = None):
         """
 
     html += "</table>"
-        
-    return HTMLResponse(
-        html
-    )
+    return html
+
+def MakeWebform():
+    form = f"""
+        <html>
+        <head>
+            <script src="https://unpkg.com/htmx.org@1.9.5"></script>
+            <link rel="stylesheet" href="https://github.com/misterjacobo97/DoTheyChargeExtra/blob/main/css/webform.css">
+        </head>
+        <body>
+            <div id="cafe-table">
+                {MakeCafeTable()}
+            </div>
+
+        </body>
+        </html>"""
+
+    return form
