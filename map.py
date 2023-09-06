@@ -1,6 +1,7 @@
 import mongoData
 import dataTemplate
 from typing import List
+from fastapi.responses import FileResponse
 
 import folium
 
@@ -123,7 +124,7 @@ def AddMapFeatureGroup(groupName, map):
     )
 
 def MakePopupHead():
-    style = "<style>" + oldcss() + "</style>" #open(".\css\popupStyles.css").read() + "</style>"
+    style = f'<link rel="stylesheet" href="/css/popupStyles">'#"<style>" + oldcss() + "</style>" #open(".\css\popupStyles.css").read() + "</style>"
 
     return style
 

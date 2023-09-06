@@ -1,7 +1,9 @@
 from fastapi import FastAPI
 from fastapi import Response
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
 from map import GetMap
+
 
 import mongowebform, mongoData
 
@@ -86,3 +88,10 @@ def GetCafe(cafe = None):
     return HTMLResponse(
         html
     )
+
+# app.mount('/css/webform', app=StaticFiles(directory='css'), name="webform.css")
+
+
+@app.get("/css/{style}")
+def GetStyle(style):
+    return FileResponse(f"./css/{style}.css")

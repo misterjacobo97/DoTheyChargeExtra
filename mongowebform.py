@@ -77,7 +77,7 @@ def MakeWebform():
         <html>
         <head>
             <script src="https://unpkg.com/htmx.org@1.9.5"></script>
-            <link rel="stylesheet" href="https://github.com/misterjacobo97/DoTheyChargeExtra/blob/main/css/webform.css">
+            <link rel="stylesheet" href="/css/webform" type="text/css"/>
         </head>
         <body>
             <div id="cafe-table">
