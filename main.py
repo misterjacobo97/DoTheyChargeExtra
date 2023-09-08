@@ -5,7 +5,7 @@ from fastapi.staticfiles import StaticFiles
 from map import GetMap
 
 
-import mongowebform, mongoData
+import mongowebform, mongoData, dataTemplate
 
 app = FastAPI()
 
@@ -29,8 +29,7 @@ async def NewEntry(cafe = None):
 
 @app.get('/get_cafe')
 def GetCafe(cafe = None):
-    cafeinfo = mongoData.MakeCafesPydantic()
-
+    cafeinfo = dataTemplate.Cafe()
     
     html = f"""
     <table style="width: 100%">
@@ -57,9 +56,6 @@ def GetCafe(cafe = None):
             <th>Long</th>
         </tr> 
     """
-
-    # if not cafe:
-    #     cafeinfo = cafeinfo.list
 
     for x in cafeinfo.list:
         html += f"""
@@ -88,9 +84,6 @@ def GetCafe(cafe = None):
     return HTMLResponse(
         html
     )
-
-# app.mount('/css/webform', app=StaticFiles(directory='css'), name="webform.css")
-
 
 @app.get("/css/{style}")
 def GetStyle(style):

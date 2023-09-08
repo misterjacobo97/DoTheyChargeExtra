@@ -1,12 +1,16 @@
 import mongoData
+from dataTemplate import AddNewCafe, Cafe
+
+AddNewCafe(
+    "shift test",
+    "Vegan Cafe"
+)
 
 def CafeSelection():
     cafes = mongoData.MakeCafesPydantic().list
 
     form = f"""
         <label for="cafe">Cafes:</label>
-
-
         <select name="cafe" id="cafe-select" hx-get="/get_cafe" hx-target="#cafe-label" hx-indicator=".htmx-indicator">
         """
         
@@ -19,7 +23,7 @@ def CafeSelection():
     return form
 
 def MakeCafeTable():
-    cafeinfo = mongoData.MakeCafesPydantic()
+    cafeinfo = Cafe()
 
     html = f"""
     <table style="width: 100%">
@@ -46,8 +50,8 @@ def MakeCafeTable():
             <th>Long</th>
         </tr> 
     """
-
-    for x in cafeinfo.list:
+    print(cafeinfo.name)
+    for x in cafeinfo.objects:
         html += f"""
             <tr>
             <td>{x.name}</td>
